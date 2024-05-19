@@ -5,51 +5,20 @@ INPUT :
 Output :
 8
 */
-#include<iostream>
-using namespace std;
-int n,ans=-1;
-int ar[1000],vis[1000];
-
-void go(int first,int second)
-{
-  
-    
-    if(first==second)
-    {
-        ans= max(ans,first);
-       // return;
-    }
-    for(int i=1;i<=n;i++)
-    {
-        if(!vis[i])
-        {
-            vis[i]=1;
-            go(ar[i]+first,second);
-            go(first,second+ar[i]);
-            vis[i]=0;
+int f(int i,int diff,vector<int>& rods,int n,vector<vector<int>>& dp){
+        if(i==n){
+            if(!diff) return 0;
+            return -1e9;
         }
+        if(dp[i][5000+diff]!=-1) return dp[i][5000+diff];
+        int op1=rods[i]+f(i+1,diff+rods[i],rods,n,dp);
+        int op2=f(i+1,diff-rods[i],rods,n,dp);
+        int op3=f(i+1,diff,rods,n,dp);
+        return dp[i][5000+diff]=max(max(op1,op2),op3);
     }
 
-}
-int main()
-{
-    #ifndef ONLINE_JUDGE
- 
-    freopen("input.txt", "r", stdin);
- 
-    freopen("output.txt", "w", stdout);
-
-    #endif
-    cin>>n;
-    for(int i=1;i<=n;i++)
-    {
-        cin>>ar[i];
+    int tallestBillboard(vector<int>& rods) {
+        int n=rods.size();
+        vector<vector<int>> dp(n,vector<int>(10000,-1));
+        return f(0,0,rods,n,dp);
     }
-    
-    go(0,0);
-
-    cout<<ans<<endl;
-
-    return 0;
-
-}
